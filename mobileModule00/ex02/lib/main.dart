@@ -14,51 +14,74 @@ class MyApp extends StatelessWidget
 	}
 }
 
-class MyHomePage extends StatefulWidget
+class MyHomePage extends StatelessWidget
 {
-	@override
-    MyHomePageState createState() => MyHomePageState();
-}
-
-class MyHomePageState extends State<MyHomePage>
-{
-	String	message = "A simple text";
-	bool	HelloWorld = false;
-	void	toggleText()
+	Widget	buildButton(String str)
 	{
-		setState(()
-		{
-			if (HelloWorld)
-			{
-				message = "A simple text";
-			}
-			else
-			{
-				message = "Hello world";
-			}
-			HelloWorld = !HelloWorld;
-		});
+		return (ElevatedButton(child: Text(str), onPressed: () {
+		  print("pressed "+ str);
+		},));
 	}
 
 	@override
 	Widget build(BuildContext context)
 	{
 		return (Scaffold(
-				appBar: AppBar(title: Text("Calculator")),
+				appBar: AppBar(title: Text("Calculator"),
+				centerTitle: true),
 				body: Center(
 					child: Column(
-						mainAxisAlignment: MainAxisAlignment.center,
-						children: [Text(message),
-									ElevatedButton(onPressed: ()
-									{
-										toggleText();
-										print("Button pressed");
-									},
-									child: Text("Click me"))],
-									),
-							),
-						)
-				);
+						children: [
+							TextField(readOnly: true, decoration: InputDecoration(hintText: "0"), textAlign: TextAlign.right),
+							TextField(readOnly: true, decoration: InputDecoration(hintText: "0"), textAlign: TextAlign.right),
+							Expanded(child: Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
+									buildButton("7"),
+									buildButton("8"),
+									buildButton("9"),
+									buildButton("/"),
+								],
+							)),
+							Expanded(child: Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
+									buildButton("4"),
+									buildButton("5"),
+									buildButton("6"),
+									buildButton("*"),
+								],
+							)),
+							Expanded(child: Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
+									buildButton("1"),
+									buildButton("2"),
+									buildButton("3"),
+									buildButton("-"),
+								],
+							)),
+							Expanded(child: Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
+									buildButton("."),
+									buildButton("0"),
+									buildButton("="),
+									buildButton("+"),
+								],
+							)),
+							Expanded(child: Row(
+								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+								children: [
+									buildButton("C"),
+									buildButton("AC"),
+								],
+							))
+						],
+					),
+				),
+			)
+		);
 	}
 
 }
