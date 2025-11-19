@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main()
 {
@@ -10,25 +11,64 @@ class MyApp extends StatelessWidget
 	@override
 	Widget build(BuildContext context)
 	{
-		return (MaterialApp(debugShowCheckedModeBanner: false, title: "Exerice 01", home: MyHomePage()));
+		return (MaterialApp(debugShowCheckedModeBanner: false, title: "Calculator app", home: MyHomePage()));
 	}
 }
 
 class MyHomePage extends StatefulWidget
 {
-  @override
-  MyHomePageState createState() => MyHomePageState();
+	@override
+	MyHomePageState createState() => MyHomePageState();
 }
 
 class MyHomePageState extends State<MyHomePage>
 {
 	String	result = "0";
-	String	expression = "0";
+	String	expression = "";
+
+	TextEditingController resultController = TextEditingController();
+	TextEditingController expressionController = TextEditingController();
+
+	String	calculate(String exp)
+	{
+		try
+		{
+		Parser p = Parser();
+		Expression expr = p.parse(exp);
+		ContextModel context = ContextModel();
+		double res = expr.evaluate(EvaluationType.REAL, context);
+		if (res.isInfinite || res.isNaN)
+			return ("Error");
+		return (res.toString());
+		}
+		catch (e)
+		{
+			return ("Error");
+		}
+	}
 
 	Widget	buildButton(String str)
 	{
-		return (ElevatedButton(child: Text(str), onPressed: () {
-		  print("pressed "+ str);
+		return (ElevatedButton(child: Text(str), onPressed: ()
+		{
+			setState(()
+			{
+				if (str == "=")
+					result = calculate(expression);
+				else if (str == "AC")
+				{
+					expression = "";
+					result = "0";
+				}
+				else if (str == "C")
+				{
+					if (expression.length >= 1)
+						expression = expression.substring(0, expression.length - 1);
+				}
+				else
+					expression += str;
+			});
+			print("pressed "+ str);
 		},));
 	}
 
@@ -41,8 +81,8 @@ class MyHomePageState extends State<MyHomePage>
 				body: Center(
 					child: Column(
 						children: [
-							TextField(readOnly: true, decoration: InputDecoration(hintText: "0"), textAlign: TextAlign.right),
-							TextField(readOnly: true, decoration: InputDecoration(hintText: "0"), textAlign: TextAlign.right),
+							TextField(controller: resultController, readOnly: true, decoration: InputDecoration(hintText: expression), textAlign: TextAlign.right),
+							TextField(controller: expressionController, readOnly: true, decoration: InputDecoration(hintText: result), textAlign: TextAlign.right),
 							Expanded(child: Row(
 								mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 								children: [

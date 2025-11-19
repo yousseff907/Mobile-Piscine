@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget
 	@override
 	Widget build(BuildContext context)
 	{
-		return (MaterialApp(debugShowCheckedModeBanner: false, title: "Exerice 01", home: MyHomePage()));
+		return (MaterialApp(debugShowCheckedModeBanner: false, title: "Exerice 02", home: MyHomePage()));
 	}
 }
 
