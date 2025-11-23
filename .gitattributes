@@ -1,13 +1,36 @@
+# Flutter/Dart specific
+*.dart linguist-detectable=true
+*.g.dart linguist-generated=true
+
+# Platform-specific files to ignore
 *.h linguist-detectable=false
 *.cc linguist-detectable=false
 *.cpp linguist-detectable=false
-*.kt linguist-detectable=false
-*.rb linguist-detectable=false
-*.swift linguist-detectable=false
+*.c linguist-detectable=false
+*.hpp linguist-detectable=false
+*.cxx linguist-detectable=false
+
+# Build system files
 *.cmake linguist-detectable=false
+CMakeLists.txt linguist-detectable=false
 *.gradle linguist-detectable=false
+*.mk linguist-detectable=false
+
+# Mobile platform files
+*.kt linguist-detectable=false
+*.java linguist-detectable=false
+*.swift linguist-detectable=false
+*.m linguist-detectable=false
+*.mm linguist-detectable=false
+*.rb linguist-detectable=false
+
+# Configuration files
 *.json linguist-detectable=false
-*.plist linguist-detectable=false
-*.html linguist-detectable=false
 *.xml linguist-detectable=false
+*.plist linguist-detectable=false
+*.yaml linguist-detectable=false
+*.yml linguist-detectable=false
+
+# Generated/build files
 *.g.dart linguist-generated=true
+*.freezed.dart linguist-generated=true
