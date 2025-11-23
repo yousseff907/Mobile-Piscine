@@ -25,12 +25,13 @@ class MyHomePage extends StatefulWidget
 
 class MyHomePageState extends State<MyHomePage>
 {
-  int                    	 _index = 0;
-  String                 	 _text = "";
-  TextEditingController  	 _controller = TextEditingController();
-  PageController           _pageController = PageController();
-  List<Map<String, dynamic>> _cities = [];
-  Map<String, dynamic>?_weather;
+  int                    	    _index = 0;
+  String                 	    _text = "";
+  TextEditingController  	    _controller = TextEditingController();
+  PageController              _pageController = PageController();
+  List<Map<String, dynamic>>  _cities = [];
+  Map<String, dynamic>?       _weather;
+  String?                     _errorMessage;
 
   String _getWeatherDescription(int code)
   {
@@ -139,31 +140,51 @@ class MyHomePageState extends State<MyHomePage>
   void _onSearchSubmit(String value) async
   {
     if (value.isEmpty) return;
-
-    String URL = "https://geocoding-api.open-meteo.com/v1/search?name=$value";
-    var response = await http.get(Uri.parse(URL));
     
-    if (response.statusCode == 200)
+    try
     {
-      var data = jsonDecode(response.body);
-      var results = data['results'];
+      String URL = "https://geocoding-api.open-meteo.com/v1/search?name=$value";
+      var response = await http.get(Uri.parse(URL));
       
-      if (results != null && results.isNotEmpty)
+      if (response.statusCode == 200)
       {
+        var data = jsonDecode(response.body);
+        var results = data['results'];
+        
+        if (results == null || results.isEmpty)
+        {
+          setState(() {
+            _errorMessage = "City not found. Please try a different city name.";
+          });
+          return;
+        }
         var firstCity = results[0];
         String cityName = firstCity['name'] ?? '';
         String region = firstCity['admin1'] ?? '';
         String country = firstCity['country'] ?? '';
-
-        setState(() {
+        
+        setState(() 
+        {
           _text = "$cityName, $region, $country";
           _cities = [];
+          _errorMessage = null;
         });
-
+        
         _searchWeather(firstCity['latitude'], firstCity['longitude']);
-
         _controller.clear();
       }
+      else
+      {
+        setState(() {
+          _errorMessage = "Connection failed. Please check your internet connection.";
+        });
+      }
+    }
+    catch (e)
+    {
+      setState(() {
+        _errorMessage = "Connection error. Please try again.";
+      });
     }
   }
 
@@ -280,7 +301,22 @@ class MyHomePageState extends State<MyHomePage>
                   ));
                 },),
             ),
-          )
+          ),
+          if (_errorMessage != null)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Colors.red,
+              padding: EdgeInsets.all(16),
+              child: Text(
+                _errorMessage!,
+                style: TextStyle(color: Colors.white, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ]),
       bottomNavigationBar: BottomNavigationBar(currentIndex: _index,
                           items: [
